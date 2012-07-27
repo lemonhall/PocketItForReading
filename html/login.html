@@ -1,0 +1,103 @@
+<html>
+	<head>
+		<title>Pocket Login</title>
+		<link rel="stylesheet" type="text/css" href="../css/reset.css">
+		<link rel="stylesheet" type="text/css" href="../css/login.css">
+		<script type="text/javascript">
+
+			var createAccountLinkURL = "http://getpocket.com/signup/";
+			var forgotLinkURL = "http://getpocket.com/forgot/";
+
+			var openLinkInNewTab = function(tabId, url) {
+				chrome.tabs.create({'url': url}, function(tab) {
+					chrome.tabs.update(tab.id, { selected: true } )
+  				});
+			};
+
+			var startLogin = function(tabId) {
+				var error_field = document.getElementById("subtext-field");
+				error_field.setAttribute("class", "");
+				error_field.innerHTML = "Logging in...";
+
+				var username = document.getElementById("username-field").value;
+				var password = document.getElementById("password-field").value;
+				chrome.extension.sendRequest({tabId:tabId, action:"login", username:username, password:password}, function(response) {
+					if (response.status == "error") {
+						error_field.setAttribute("class", "error");
+						error_field.innerHTML = response.error || "The username and or password you entered was incorrect.";
+						error_field.style.display = "block";
+					} else if (response.status == "success") {
+						this.close();
+					};
+				});
+			};
+
+			var init = function () {
+				// Get the tabId to close the popup after the login
+				chrome.tabs.getSelected(null, function(tab) {
+					var tabId = tab.id;
+
+					var loginButton = document.getElementById("login-button-link");
+					loginButton.onclick = function () {
+						startLogin(tabId);
+						return false;
+					};
+				
+					// Signup and Forgot Password links	
+					var createAccountLink = document.getElementById("create-account-link");
+					createAccountLink.onclick = function() {
+						openLinkInNewTab(tabId, createAccountLinkURL);
+					};
+
+					var forgotLink = document.getElementById("forgot-password-link");
+					forgotLink.onclick = function () {
+						openLinkInNewTab(tabId, forgotLinkURL);
+					};
+      			});
+
+
+				// We need to set a timer here because the username-field will not be selected if we don't have a delay
+				setTimeout(function() {
+					document.getElementById("username-field").focus();
+				}, 200);
+
+			};
+			
+  			var keypressed = function(){
+  				// Hitting enter should submit login form 
+				if(event.keyCode == '13'){
+					chrome.tabs.getSelected(null, function(tab) {
+						startLogin(tab.id);
+					});
+				}
+			};
+
+			window.onkeyup = keypressed;
+			window.onload = init;
+
+		</script>
+	</head>
+	<body>
+		<div id="outer-container">
+			<div id="inner-container">
+				<div id="header">
+				  	<img src="../img/Pocket-Chrome-OptionsLogo.png">
+				    <a id="create-account-link" href="#">Create  an account</a>
+				 </div>
+				  <div id="content">
+				    <h1>LOG IN</h1>
+				    <h2>Hello. Great to see you again!</h2>
+				    <input id="username-field" type="text" placeholder="Username"></input>
+				    <input id="password-field" type="password" placeholder="Password" ></input>
+				    <p id="subtext-field">You can log into Pocket with your existing Read It Later account.</p>
+				    <p id="login-button-container">
+				    	<a id="login-button-link" href="#"></a>
+				    </p>
+				  </div>
+				  <div id="footer">
+				   	<a id="forgot-password-link" href="#">I forgot my password.</a>
+				 </div>
+			</div>
+		</div>
+	</body>
+</html>

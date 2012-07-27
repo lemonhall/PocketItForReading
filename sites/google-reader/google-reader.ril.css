@@ -1,0 +1,47 @@
+.ril-icon  {  
+  -webkit-user-select: none;  
+  display: inline-block;  
+  background: url(chrome-extension://__MSG_@@extension_id__/sites/google-reader/greader_sprite.png);
+  width: 17px;  
+  height: 17px;  
+  margin-left: 5px;  
+  margin-right: 3px;  
+  position: relative;  
+  left: -13px;  
+  z-index: 50;  
+  cursor: pointer;  
+}
+
+.collapsed .ril-icon{
+  left: -16px;
+}
+
+.ril-icon:hover {
+  background-position: -191px 0px;
+}
+
+.ril-icon.unread {  
+  background-position: -382px 0px;
+}
+
+.ril-icon.updating { 
+  background: url(chrome-extension://__MSG_@@extension_id__/sites/google-reader/markempty16-loading.gif);  
+}  
+
+/* This is for the Reader's "list mode", to make room for the check-icon */
+#entries.list.single-source .entry > .collapsed > .entry-main > .entry-secondary   {  
+  margin-left: 35px !important;  
+}
+
+#entries.list .entry > .collapsed > .entry-main > .entry-source-title  {  
+  margin-left: 23px !important;  
+}
+
+#entries.list .entry > .collapsed > .entry-main > .entry-secondary > .entry-title   {  
+  margin-left: 10px !important;  
+} 
+
+/* This is for the Reader's "expanded mode", to make room for the icon */
+#entries.cards .entry-icons {  
+  width: auto;  
+} 
